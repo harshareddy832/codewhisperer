@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codebase Whisperer | DEMO MODE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* Claude-inspired color palette */
+        :root {
+            --claude-amber: #D97706;
+            --claude-amber-light: #F59E0B;
+            --claude-amber-dark: #B45309;
+            --claude-brown: #78716C;
+            --claude-brown-light: #A8A29E;
+            --claude-brown-dark: #57534E;
+            --claude-cream: #FEF7ED;
+            --claude-cream-dark: #FED7AA;
+            --claude-text-primary: #1C1917;
+            --claude-text-secondary: #44403C;
+            --claude-text-muted: #78716C;
+            --claude-border: #E7E5E4;
+            --claude-surface: #FFFBEB;
+            --claude-surface-elevated: #FFFFFF;
+            --claude-accent: #DC2626;
+            --claude-success: #059669;
+            
+            /* Typography */
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--claude-cream) 0%, var(--claude-surface) 100%);
+            color: var(--claude-text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--claude-amber) 0%, var(--claude-amber-dark) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--claude-text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: var(--claude-accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .tagline {
+            font-size: 1.125rem;
+            color: var(--claude-text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Demo Controls */
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--claude-surface-elevated);
+            border: 1px solid var(--claude-border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--claude-amber-light);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--claude-amber);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--claude-text-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--claude-amber);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--claude-amber-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--claude-surface-elevated);
+            color: var(--claude-text-primary);
+            border: 1px solid var(--claude-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--claude-cream);
+            border-color: var(--claude-amber);
+        }
+
+        /* Analysis Results */
+        .analysis-results {
+            display: none;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 1rem;
+            background: var(--claude-surface);
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--claude-amber);
+        }
+
+        .metric-label {
+            color: var(--claude-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Visualization Container */
+        .viz-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .viz-header {
+            background: linear-gradient(135deg, var(--claude-amber) 0%, var(--claude-amber-dark) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .viz-content {
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Loading Animation */
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--claude-amber);
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* AI Response */
+        .ai-response {
+            background: var(--claude-surface);
+            border: 1px solid var(--claude-border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .code-example {
+            background: var(--claude-text-primary);
+            color: var(--claude-cream);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        /* Status Messages */
+        .status-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1000;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .status-message.show {
+            transform: translateX(0);
+        }
+
+        .status-success {
+            background: var(--claude-success);
+            color: white;
+        }
+
+        .status-info {
+            background: var(--claude-amber);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .demo-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🧠</div>
+                <h1 class="logo-text">Codebase Whisperer</h1>
+                <span class="demo-badge">DEMO MODE</span>
+            </div>
+            <p class="tagline">AI-powered codebase intelligence that understands your code like a senior developer</p>
+        </header>
+
+        <!-- Demo Controls -->
+        <div class="demo-controls">
+            <button class="btn btn-primary" onclick="simulateReactAnalysis()">
+                🔍 Analyze React Repository
+            </button>
+            <button class="btn btn-primary" onclick="simulateExpressAnalysis()">
+                🔍 Analyze Express.js App
+            </button>
+            <button class="btn btn-secondary" onclick="askDemoQuestion()">
+                🤖 Ask Sample Question
+            </button>
+        </div>
+
+        <!-- Analysis Results -->
+        <div id="analysisResults" class="analysis-results">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h2 class="card-title">Codebase Analysis Complete</h2>
+                </div>
+                
+                <div id="metricsDisplay"></div>
+                <div id="architectureInsights"></div>
+            </div>
+
+            <!-- Visualization -->
+            <div id="visualizationContainer" class="viz-container">
+                <div class="viz-header">
+                    <h3>🏗️ Architecture Visualization</h3>
+                </div>
+                <div id="vizContent" class="viz-content">
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span style="margin-left: 1rem;">Generating visualization...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Response -->
+        <div id="aiResponse" class="ai-response">
+            <h3 style="color: var(--claude-amber-dark); margin-bottom: 1rem;">🤖 AI Analysis</h3>
+            <div id="aiContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Demo State
+        let currentAnalysis = null;
+        let isAnalyzing = false;
+
+        // Sample Data
+        const reactAnalysis = {
+            repository: {
+                type: 'github',
+                name: 'React Dashboard App',
+                url: 'https://github.com/user/react-dashboard'
+            },
+            metrics: {
+                totalFiles: 47,
+                totalFunctions: 156,
+                totalClasses: 23,
+                totalLines: 8420,
+                avgComplexity: 2.1,
+                languages: ['jsx', 'js', 'css']
+            },
+            patterns: ['Component Pattern', 'Hooks Pattern', 'Context API', 'Higher-Order Components'],
+            components: [
+                { name: 'Authentication System', responsibility: 'User login and session management', files: ['auth/', 'components/Login.jsx'] },
+                { name: 'Dashboard Components', responsibility: 'Data visualization and user interface', files: ['Dashboard.jsx', 'charts/'] },
+                { name: 'API Layer', responsibility: 'Backend communication and data fetching', files: ['api/', 'services/'] }
+            ]
+        };
+
+        const expressAnalysis = {
+            repository: {
+                type: 'github',
+                name: 'Express.js API Server',
+                url: 'https://github.com/user/express-api'
+            },
+            metrics: {
+                totalFiles: 32,
+                totalFunctions: 89,
+                totalClasses: 12,
+                totalLines: 5630,
+                avgComplexity: 2.8,
+                languages: ['js', 'json']
+            },
+            patterns: ['MVC Pattern', 'Middleware Pattern', 'Repository Pattern', 'Factory Pattern'],
+            components: [
+                { name: 'Router Layer', responsibility: 'HTTP request routing and endpoint management', files: ['routes/', 'controllers/'] },
+                { name: 'Authentication Middleware', responsibility: 'Request authentication and authorization', files: ['middleware/auth.js', 'utils/jwt.js'] },
+                { name: 'Database Layer', responsibility: 'Data persistence and ORM operations', files: ['models/', 'database/'] }
+            ]
+        };
+
+        // Demo Functions
+        async function simulateReactAnalysis() {
+            if (isAnalyzing) return;
+            
+            showMessage('🔍 Analyzing React repository...', 'info');
+            isAnalyzing = true;
+            
+            // Simulate loading
+            await delay(2000);
+            
+            currentAnalysis = reactAnalysis;
+            displayAnalysisResults(reactAnalysis);
+            
+            showMessage('✅ React analysis complete!', 'success');
+            isAnalyzing = false;
+        }
+
+        async function simulateExpressAnalysis() {
+            if (isAnalyzing) return;
+            
+            showMessage('🔍 Analyzing Express.js repository...', 'info');
+            isAnalyzing = true;
+            
+            // Simulate loading
+            await delay(2000);
+            
+            currentAnalysis = expressAnalysis;
+            displayAnalysisResults(expressAnalysis);
+            
+            showMessage('✅ Express.js analysis complete!', 'success');
+            isAnalyzing = false;
+        }
+
+        async function askDemoQuestion() {
+            if (!currentAnalysis) {
+                showMessage('⚠️ Please analyze a repository first', 'info');
+                return;
+            }
+
+            const aiResponse = document.getElementById('aiResponse');
+            const aiContent = document.getElementById('aiContent');
+            
+            aiResponse.style.display = 'block';
+            aiContent.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> AI is thinking...';
+            
+            await delay(2500);
+            
+            const isReact = currentAnalysis.repository.name.includes('React');
+            const question = isReact ? 
+                "How does component state management work in this React application?" :
+                "How does the authentication middleware work in this Express.js app?";
+            
+            const answer = isReact ?
+                `This React application uses modern state management patterns including React Hooks (useState, useEffect) and Context API for global state. The authentication state is managed through AuthContext.jsx, which provides login status across components. Local component state is handled with useState hooks for form inputs and UI interactions.` :
+                `The authentication system uses JWT tokens with middleware-based verification. The auth middleware (middleware/auth.js) intercepts protected routes, validates JWT tokens from the Authorization header, and attaches user information to the request object. Failed authentication returns 401/403 status codes.`;
+
+            const codeExample = isReact ?
+                `// AuthContext.jsx
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const login = async (credentials) => {
+    const response = await api.post('/auth/login', credentials);
+    setUser(response.data.user);
+    localStorage.setItem('token', response.data.token);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};` :
+                `// middleware/auth.js
+const jwt = require('jsonwebtoken');
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access denied' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    req.user = user;
+    next();
+  });
+};`;
+
+            aiContent.innerHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--claude-amber-dark); margin-bottom: 0.5rem;">Question:</h4>
+                    <p style="color: var(--claude-text-secondary); font-style: italic;">"${question}"</p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--claude-amber-dark); margin-bottom: 0.5rem;">Answer:</h4>
+                    <p style="line-height: 1.6;">${answer}</p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--claude-amber-dark); margin-bottom: 0.5rem;">Code Example:</h4>
+                    <div class="code-example">${codeExample}</div>
+                </div>
+                
+                <div style="font-size: 0.875rem; color: var(--claude-text-muted);">
+                    Confidence: 92% | Generated with IBM watsonx.ai Granite 3.3
+                </div>
+            `;
+
+            showMessage('🤖 AI question answered!', 'success');
+        }
+
+        function displayAnalysisResults(analysis) {
+            const resultsDiv = document.getElementById('analysisResults');
+            const metricsDiv = document.getElementById('metricsDisplay');
+            const insightsDiv = document.getElementById('architectureInsights');
+            
+            // Show results
+            resultsDiv.style.display = 'block';
+            
+            // Display metrics
+            const metrics = analysis.metrics;
+            metricsDiv.innerHTML = `
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">${metrics.totalFiles}</div>
+                        <div class="metric-label">Files</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${metrics.totalFunctions}</div>
+                        <div class="metric-label">Functions</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${metrics.totalClasses}</div>
+                        <div class="metric-label">Classes</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${metrics.totalLines.toLocaleString()}</div>
+                        <div class="metric-label">Lines of Code</div>
+                    </div>
+                </div>
+                
+                <div style="margin: 1rem 0;">
+                    <strong>Languages:</strong> 
+                    ${metrics.languages.map(lang => `<span style="background: var(--claude-cream); color: var(--claude-amber-dark); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; margin-right: 0.5rem;">${lang.toUpperCase()}</span>`).join('')}
+                </div>
+            `;
+            
+            // Display architectural insights
+            insightsDiv.innerHTML = `
+                <div style="margin: 2rem 0;">
+                    <h3 style="color: var(--claude-text-primary); margin-bottom: 1rem;">🏗️ Architectural Analysis</h3>
+                    
+                    <div style="background: var(--claude-surface); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="color: var(--claude-amber-dark); margin-bottom: 0.5rem;">Architecture Style</h4>
+                        <p style="color: var(--claude-text-secondary);">${analysis.repository.name.includes('React') ? 'Component-Based Architecture' : 'Layered MVC Architecture'}</p>
+                    </div>
+                    
+                    <div style="background: var(--claude-surface); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="color: var(--claude-amber-dark); margin-bottom: 0.5rem;">Key Components</h4>
+                        <ul style="color: var(--claude-text-secondary); margin-left: 1rem;">
+                            ${analysis.components.map(comp => `<li><strong>${comp.name}</strong>: ${comp.responsibility}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div style="background: var(--claude-surface); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: var(--claude-amber-dark); margin-bottom: 0.5rem;">Design Patterns</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            ${analysis.patterns.map(pattern => `<span style="background: var(--claude-amber); color: white; padding: 0.25rem 0.75rem; border-radius: 16px; font-size: 0.875rem;">${pattern}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Generate visualization
+            generateVisualization(analysis);
+        }
+
+        async function generateVisualization(analysis) {
+            const vizContent = document.getElementById('vizContent');
+            
+            await delay(1500);
+            
+            // Create SVG visualization
+            const svg = d3.select(vizContent)
+                .html('')
+                .append('svg')
+                .attr('width', '100%')
+                .attr('height', '400')
+                .attr('viewBox', '0 0 800 400')
+                .style('background', '#FFFBEB')
+                .style('border-radius', '8px');
+
+            // Sample nodes based on analysis type
+            const isReact = analysis.repository.name.includes('React');
+            const nodes = isReact ? [
+                { id: 'App.jsx', group: 1, x: 400, y: 100 },
+                { id: 'Header.jsx', group: 2, x: 200, y: 200 },
+                { id: 'Dashboard.jsx', group: 2, x: 400, y: 200 },
+                { id: 'Sidebar.jsx', group: 2, x: 600, y: 200 },
+                { id: 'AuthContext.jsx', group: 3, x: 300, y: 300 },
+                { id: 'api.js', group: 3, x: 500, y: 300 }
+            ] : [
+                { id: 'server.js', group: 1, x: 400, y: 100 },
+                { id: 'routes/', group: 2, x: 200, y: 200 },
+                { id: 'middleware/', group: 2, x: 400, y: 200 },
+                { id: 'controllers/', group: 2, x: 600, y: 200 },
+                { id: 'models/', group: 3, x: 300, y: 300 },
+                { id: 'database.js', group: 3, x: 500, y: 300 }
+            ];
+
+            const links = [
+                { source: nodes[0], target: nodes[1] },
+                { source: nodes[0], target: nodes[2] },
+                { source: nodes[0], target: nodes[3] },
+                { source: nodes[2], target: nodes[4] },
+                { source: nodes[2], target: nodes[5] }
+            ];
+
+            const colorScale = ['#D97706', '#F59E0B', '#059669'];
+
+            // Create links
+            svg.selectAll('line')
+                .data(links)
+                .enter()
+                .append('line')
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y)
+                .attr('stroke', '#78716C')
+                .attr('stroke-width', 2)
+                .attr('opacity', 0.6);
+
+            // Create nodes
+            svg.selectAll('circle')
+                .data(nodes)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 25)
+                .attr('fill', d => colorScale[d.group - 1])
+                .attr('stroke', 'white')
+                .attr('stroke-width', 3);
+
+            // Add labels
+            svg.selectAll('text')
+                .data(nodes)
+                .enter()
+                .append('text')
+                .attr('x', d => d.x)
+                .attr('y', d => d.y + 45)
+                .attr('text-anchor', 'middle')
+                .style('font-family', 'Inter, sans-serif')
+                .style('font-size', '12px')
+                .style('font-weight', '500')
+                .style('fill', '#1C1917')
+                .text(d => d.id);
+
+            // Add title
+            svg.append('text')
+                .attr('x', 400)
+                .attr('y', 30)
+                .attr('text-anchor', 'middle')
+                .style('font-family', 'Inter, sans-serif')
+                .style('font-size', '16px')
+                .style('font-weight', '600')
+                .style('fill', '#D97706')
+                .text(`${analysis.repository.name} - Dependency Graph`);
+        }
+
+        function showMessage(message, type) {
+            // Remove existing message
+            const existing = document.querySelector('.status-message');
+            if (existing) {
+                existing.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `status-message status-${type}`;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+
+            // Show message
+            setTimeout(() => messageDiv.classList.add('show'), 100);
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Initialize demo
+        console.log('🧠 Codebase Whisperer Demo Mode Initialized');
+        console.log('🎭 Ready for hackathon demonstration!');
+    </script>
+</body>
+</html>

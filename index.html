@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codebase Whisperer | AI-Powered Code Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Claude-inspired color palette */
+        :root {
+            --claude-amber: #D97706;
+            --claude-amber-light: #F59E0B;
+            --claude-amber-dark: #B45309;
+            --claude-brown: #78716C;
+            --claude-brown-light: #A8A29E;
+            --claude-brown-dark: #57534E;
+            --claude-cream: #FEF7ED;
+            --claude-cream-dark: #FED7AA;
+            --claude-text-primary: #1C1917;
+            --claude-text-secondary: #44403C;
+            --claude-text-muted: #78716C;
+            --claude-border: #E7E5E4;
+            --claude-surface: #FFFBEB;
+            --claude-surface-elevated: #FFFFFF;
+            --claude-accent: #DC2626;
+            --claude-success: #059669;
+            
+            /* Typography */
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--claude-cream) 0%, var(--claude-surface) 100%);
+            color: var(--claude-text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--claude-amber) 0%, var(--claude-amber-dark) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--claude-text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        .tagline {
+            font-size: 1.125rem;
+            color: var(--claude-text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--claude-surface-elevated);
+            border: 1px solid var(--claude-border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--claude-amber-light);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--claude-amber);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--claude-text-primary);
+        }
+
+        /* Repository Upload */
+        .upload-area {
+            border: 2px dashed var(--claude-amber);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--claude-cream);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: var(--claude-cream-dark);
+            border-color: var(--claude-amber-dark);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--claude-amber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 500;
+            color: var(--claude-text-secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--claude-border);
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            background: var(--claude-surface-elevated);
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--claude-amber);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--claude-amber);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--claude-amber-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--claude-surface-elevated);
+            color: var(--claude-text-primary);
+            border: 1px solid var(--claude-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--claude-cream);
+            border-color: var(--claude-amber);
+        }
+
+        /* Code Display */
+        .code-preview {
+            background: var(--claude-text-primary);
+            color: var(--claude-cream);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-processing {
+            background: rgba(217, 119, 6, 0.1);
+            color: var(--claude-amber-dark);
+        }
+
+        .status-complete {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--claude-success);
+        }
+
+        /* Feature Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: var(--claude-surface-elevated);
+            border: 1px solid var(--claude-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--claude-amber);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--claude-amber) 0%, var(--claude-amber-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--claude-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: var(--claude-text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Loading Animation */
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--claude-amber);
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* AI Status Bar */
+        .ai-status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, var(--claude-amber), var(--claude-amber-light));
+            color: white;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ai-status-bar.show {
+            transform: translateY(0);
+        }
+
+        .ai-status-bar .status-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ai-status-text {
+            flex: 1;
+        }
+
+        .ai-status-details {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        /* History Modal */
+        .history-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(217, 119, 6, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.1) 0%, transparent 40%),
+                rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px) saturate(1.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .history-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .history-modal {
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 248, 237, 0.95) 100%);
+            backdrop-filter: blur(30px) saturate(1.2);
+            border: 1px solid rgba(217, 119, 6, 0.25);
+            border-radius: 28px;
+            width: 90vw;
+            max-width: 1100px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 
+                0 40px 80px -12px rgba(0, 0, 0, 0.25),
+                0 20px 40px -8px rgba(217, 119, 6, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                inset 0 -1px 0 rgba(217, 119, 6, 0.1);
+            transform: scale(0.85) translateY(40px) rotateX(5deg);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        
+        .history-modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: 
+                linear-gradient(135deg, rgba(217, 119, 6, 0.05) 0%, transparent 70%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            border-radius: 28px 28px 0 0;
+            pointer-events: none;
+        }
+
+        .history-modal-overlay.show .history-modal {
+            transform: scale(1) translateY(0) rotateX(0deg);
+        }
+
+        .history-modal-header {
+            background: 
+                linear-gradient(135deg, var(--claude-amber) 0%, var(--claude-amber-light) 50%, var(--claude-amber-dark) 100%);
+            color: white;
+            padding: 2.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .history-modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            opacity: 0.4;
+        }
+        
+        .history-modal-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(180deg); }
+        }
+
+        .history-modal-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            position: relative;
+        }
+        
+        .history-modal-title span {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .history-modal-close {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+            position: relative;
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .history-modal-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .history-modal-content {
+            padding: 3rem;
+            max-height: calc(90vh - 120px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(217, 119, 6, 0.6) transparent;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(217, 119, 6, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(217, 119, 6, 0.02) 0%, transparent 50%);
+        }
+        
+        .history-modal-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .history-modal-content::-webkit-scrollbar-track {
+            background: rgba(217, 119, 6, 0.05);
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        
+        .history-modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--claude-amber), var(--claude-amber-light));
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .history-modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--claude-amber-dark), var(--claude-amber));
+        }
+        
+        .history-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 237, 0.8));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(217, 119, 6, 0.15);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+        
+        .history-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--claude-amber), var(--claude-amber-light));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .history-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.12),
+                0 4px 16px rgba(217, 119, 6, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border-color: rgba(217, 119, 6, 0.25);
+        }
+        
+        .history-item:hover::before {
+            opacity: 1;
+        }
+
+        .history-item-header {
+            padding: 2rem 2.5rem 1.5rem 2.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .history-question {
+            flex: 1;
+            font-weight: 700;
+            color: var(--claude-text-primary);
+            font-size: 1.1rem;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .history-question::before {
+            content: '💭';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--claude-text-muted);
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .history-confidence {
+            background: var(--claude-amber);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .history-expand-btn {
+            background: var(--claude-surface);
+            border: 1px solid var(--claude-border);
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .history-expand-btn:hover {
+            background: var(--claude-amber);
+            color: white;
+            border-color: var(--claude-amber);
+        }
+
+        .history-answer {
+            background: rgba(217, 119, 6, 0.05);
+            color: var(--claude-text-primary);
+            line-height: 1.6;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 1.5rem;
+        }
+
+        .history-answer.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .history-answer.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding: 0 1.5rem;
+        }
+        
+        .history-answer-content {
+            line-height: 1.6;
+            color: var(--claude-text-primary);
+            font-size: 0.95rem;
+        }
+
+
+        .history-timestamp {
+            color: var(--claude-text-muted);
+            font-size: 0.75rem;
+        }
+        
+        /* Modern AI Response Design */
+        .ai-response-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            animation: slideInUp 0.6s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .question-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 237, 0.9));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .question-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--claude-amber), var(--claude-amber-light));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 16px rgba(217, 119, 6, 0.3);
+        }
+        
+        .question-header h4 {
+            color: var(--claude-amber-dark);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .question-text {
+            color: var(--claude-text-primary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 500;
+            font-style: italic;
+            padding-left: 1rem;
+            border-left: 3px solid var(--claude-amber);
+        }
+        
+        .answer-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 248, 237, 0.95));
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(217, 119, 6, 0.25);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transition: all 0.4s ease;
+        }
+        
+        .answer-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 24px 64px rgba(0, 0, 0, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .answer-header {
+            background: linear-gradient(135deg, var(--claude-amber), var(--claude-amber-light));
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .answer-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .ai-avatar {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        
+        .ai-brain {
+            font-size: 2rem;
+            z-index: 2;
+        }
+        
+        .ai-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(2); opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+        }
+        
+        .ai-info {
+            flex: 1;
+            z-index: 2;
+        }
+        
+        .ai-info h4 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ai-badges {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .model-badge, .confidence-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .model-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .confidence-badge {
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .answer-content {
+            padding: 2.5rem;
+            color: var(--claude-text-primary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        
+        .metadata-card {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.05), rgba(255, 248, 237, 0.8));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(217, 119, 6, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+        
+        .confidence-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--claude-text-secondary);
+            font-weight: 600;
+        }
+        
+        .confidence-bar {
+            width: 60px;
+            height: 6px;
+            background: rgba(217, 119, 6, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--claude-amber), var(--claude-amber-light));
+            border-radius: 3px;
+            transition: width 1s ease-out;
+        }
+        
+        .timestamp {
+            color: var(--claude-text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Empty state */
+        .history-empty {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--claude-text-muted);
+        }
+
+        .history-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AI Status Bar -->
+    <div id="aiStatusBar" class="ai-status-bar">
+        <div class="status-icon"></div>
+        <div class="ai-status-text">
+            <div id="statusMessage">🤖 AI is working...</div>
+            <div id="statusDetails" class="ai-status-details">Analyzing codebase</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🧠</div>
+                <h1 class="logo-text">Codebase Whisperer</h1>
+            </div>
+            <p class="tagline">AI-powered codebase intelligence that understands your code like a senior developer</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Repository Analysis -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📁</div>
+                    <h2 class="card-title">Analyze Repository</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">GitHub Repository URL</label>
+                    <input type="url" class="input-field" id="repoUrl" placeholder="https://github.com/user/repository">
+                </div>
+                
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">⬆️</div>
+                    <h3>Or Upload Local Repository</h3>
+                    <p>Drag & drop or click to select</p>
+                    <input type="file" id="fileInput" style="display: none;" webkitdirectory directory>
+                </div>
+                
+                <button class="btn btn-primary" onclick="analyzeRepository()" style="width: 100%; margin-top: 1rem;">
+                    🔍 Analyze Codebase
+                </button>
+                
+                <button class="btn btn-secondary" onclick="clearInputs()" style="width: 100%; margin-top: 0.5rem;">
+                    🗑️ Clear All
+                </button>
+            </div>
+
+            <!-- AI Query Interface -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🤖</div>
+                    <h2 class="card-title">Ask About Your Code</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Ask anything about your codebase</label>
+                    <textarea class="input-field" id="queryInput" rows="4" placeholder="How does authentication work in this codebase?"></textarea>
+                </div>
+                
+                <button class="btn btn-primary" onclick="askQuestion()" style="width: 100%;">
+                    💬 Get Answer
+                </button>
+                
+                <button class="btn btn-secondary" onclick="generateDocumentation()" style="width: 100%; margin-top: 1rem;">
+                    📚 Generate Comprehensive Documentation
+                </button>
+                
+                <div id="aiResponse" style="margin-top: 1rem; display: none;">
+                    <h4 style="color: var(--claude-text-secondary); margin-bottom: 0.5rem;">AI Response:</h4>
+                    <div id="responseContent" style="background: var(--claude-surface-elevated); border: 1px solid var(--claude-border); border-radius: 8px; padding: 1.5rem; line-height: 1.6;"></div>
+                </div>
+                
+                <!-- History Button -->
+                <button class="btn btn-secondary" onclick="showHistoryModal()" style="width: 100%; margin-top: 1rem; display: none;" id="viewHistoryBtn">
+                    📖 View Question History
+                </button>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div id="analysisResults" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h2 class="card-title">Codebase Architecture</h2>
+                    <div class="status-indicator status-complete">
+                        <span>✅</span> Analysis Complete
+                    </div>
+                </div>
+                
+                <div id="architectureVisualization">
+                    <!-- D3.js visualization will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Generated Documentation Block -->
+        <div id="documentationBlock" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+                    <h2 class="card-title">Generated Documentation</h2>
+                    <div class="status-indicator status-complete">
+                        <span>✅</span> Documentation Ready
+                    </div>
+                </div>
+                <div class="card-content">
+                    <p style="color: var(--claude-text-secondary); margin-bottom: 1.5rem;">
+                        Comprehensive documentation has been generated for this repository using IBM Watson AI.
+                    </p>
+                    <button onclick="reopenDocumentationModal()" 
+                            style="background: var(--claude-amber); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;">
+                        📖 View Documentation
+                    </button>
+                    <button onclick="downloadLastDocumentation()" 
+                            style="background: var(--claude-surface-elevated); color: var(--claude-text-primary); border: 1px solid var(--claude-border); padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; margin-left: 1rem;">
+                        💾 Download MD
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Instant Analysis</h3>
+                <p class="feature-description">Parse and understand any codebase in seconds using Tree-sitter and AI</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🧭</div>
+                <h3 class="feature-title">Architecture Mapping</h3>
+                <p class="feature-description">Visual component relationships and data flow patterns</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">Pattern Recognition</h3>
+                <p class="feature-description">Identify design patterns, anti-patterns, and improvement opportunities</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3 class="feature-title">Smart Q&A</h3>
+                <p class="feature-description">Ask natural language questions and get expert-level code explanations</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="history-modal-overlay">
+        <div class="history-modal">
+            <div class="history-modal-header">
+                <h3 class="history-modal-title">
+                    <span>📖</span>
+                    Question History
+                </h3>
+                <button class="history-modal-close" onclick="closeHistoryModal()">
+                    ✕
+                </button>
+            </div>
+            <div class="history-modal-content" id="historyModalContent">
+                <div class="history-empty">
+                    <div class="history-empty-icon">🤔</div>
+                    <p>No questions asked yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Debug loading
+        console.log('🚀 Loading Codebase Whisperer...');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        
+        // Define helper functions first
+        function showMessage(message, type) {
+            console.log(`📢 ${message}`);
+            let messageDiv = document.getElementById('messageDisplay');
+            if (!messageDiv) {
+                messageDiv = document.createElement('div');
+                messageDiv.id = 'messageDisplay';
+                messageDiv.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem;
+                    border-radius: 8px; font-weight: 500; z-index: 1000;
+                    max-width: 400px; box-shadow: var(--shadow-lg);
+                `;
+                document.body.appendChild(messageDiv);
+            }
+
+            const styles = {
+                info: 'background: var(--claude-amber); color: white;',
+                success: 'background: var(--claude-success); color: white;',
+                error: 'background: var(--claude-accent); color: white;'
+            };
+
+            messageDiv.style.cssText += styles[type] || styles.info;
+            messageDiv.textContent = message;
+            
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 4000);
+        }
+        
+        function hideMessage() {
+            const messageDiv = document.getElementById('messageDisplay');
+            if (messageDiv && messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }
+        
+        function displayResults(data) {
+            console.log('📊 Displaying results:', data);
+            console.log('📁 Files in analysis data:', data.files?.map(f => `${f.name} (content: ${f.content?.length || 0} chars)`));
+            window.currentAnalysis = data;
+            
+            const resultsDiv = document.getElementById('analysisResults');
+            if (resultsDiv) {
+                resultsDiv.style.display = 'block';
+                
+                const metrics = data.metrics || {};
+                const archDiv = document.getElementById('architectureVisualization');
+                
+                if (archDiv) {
+                    archDiv.innerHTML = `
+                        <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div class="metric-card" style="text-align: center; padding: 1rem; background: var(--claude-surface); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--claude-amber);">${metrics.totalFiles || 0}</div>
+                                <div style="color: var(--claude-text-secondary);">Files</div>
+                            </div>
+                            <div class="metric-card" style="text-align: center; padding: 1rem; background: var(--claude-surface); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--claude-amber);">${metrics.totalFunctions || 0}</div>
+                                <div style="color: var(--claude-text-secondary);">Functions</div>
+                            </div>
+                            <div class="metric-card" style="text-align: center; padding: 1rem; background: var(--claude-surface); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--claude-amber);">${metrics.totalClasses || 0}</div>
+                                <div style="color: var(--claude-text-secondary);">Classes</div>
+                            </div>
+                            <div class="metric-card" style="text-align: center; padding: 1rem; background: var(--claude-surface); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--claude-amber);">${(metrics.totalLines || 0).toLocaleString()}</div>
+                                <div style="color: var(--claude-text-secondary);">Lines</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin: 2rem 0; padding: 1.5rem; background: var(--claude-surface); border-radius: 8px;">
+                            <h3 style="color: var(--claude-amber-dark); margin-bottom: 1rem;">🏗️ Real AI Analysis Results</h3>
+                            <p style="color: var(--claude-text-secondary);"><strong>Repository:</strong> ${data.repository?.name || data.repository?.url || 'Unknown'}</p>
+                            <p style="color: var(--claude-text-secondary);"><strong>Languages:</strong> ${(metrics.languages || ['Unknown']).join(', ')}</p>
+                            <p style="color: var(--claude-text-secondary);"><strong>Complexity:</strong> ${metrics.avgComplexity || 'Calculating...'}</p>
+                            
+                            ${data.aiInsights ? `
+                            <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 6px;">
+                                <h4 style="color: var(--claude-amber-dark);">🧠 AI Architectural Insights:</h4>
+                                <p><strong>Style:</strong> ${data.aiInsights.architecturalStyle}</p>
+                                <p><strong>Patterns:</strong> ${data.aiInsights.patterns?.join(', ') || 'Analyzing...'}</p>
+                                ${data.aiInsights.recommendations?.length ? `
+                                <p><strong>Recommendations:</strong> ${data.aiInsights.recommendations.slice(0,3).join(', ')}</p>
+                                ` : ''}
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        function displayAIResponse(answer) {
+            console.log('🤖 Displaying AI response:', answer);
+            const responseDiv = document.getElementById('aiResponse');
+            const contentDiv = document.getElementById('responseContent');
+            
+            if (responseDiv && contentDiv) {
+                responseDiv.style.display = 'block';
+                
+                contentDiv.innerHTML = `
+                    <div class="ai-response-container">
+                        <!-- Question Card -->
+                        <div class="question-card">
+                            <div class="question-header">
+                                <div class="question-icon">💭</div>
+                                <h4>Your Question</h4>
+                            </div>
+                            <div class="question-text">"${answer.question}"</div>
+                        </div>
+                        
+                        <!-- AI Answer Card -->
+                        <div class="answer-card">
+                            <div class="answer-header">
+                                <div class="ai-avatar">
+                                    <div class="ai-brain">🧠</div>
+                                    <div class="ai-pulse"></div>
+                                </div>
+                                <div class="ai-info">
+                                    <h4>AI Assistant</h4>
+                                    <div class="ai-badges">
+                                        <span class="model-badge">IBM Granite 3.3</span>
+                                        <span class="confidence-badge">${(answer.confidence * 100).toFixed(0)}% confident</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="answer-content">
+                                ${formatStructuredResponse(answer.answer)}
+                            </div>
+                        </div>
+                        
+                        ${answer.codeExamples?.length ? `
+                        <div class="code-examples-card">
+                            <h4 style="color: var(--claude-amber-dark); margin: 0 0 1.5rem 0; font-weight: 700; font-size: 1.25rem;">💻 Code Examples</h4>
+                            ${answer.codeExamples.map(ex => `
+                                <div style="margin: 1.5rem 0; border: 1px solid rgba(217, 119, 6, 0.2); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);">
+                                    <div style="background: linear-gradient(135deg, var(--claude-amber), var(--claude-amber-light)); padding: 1rem; font-weight: 600; color: white; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);">${ex.file}</div>
+                                    <pre style="background: var(--claude-text-primary); color: var(--claude-cream); padding: 1.5rem; margin: 0; overflow-x: auto; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.5;"><code>${ex.code}</code></pre>
+                                    <div style="background: rgba(255, 248, 237, 0.8); padding: 1rem; color: var(--claude-text-secondary); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid rgba(217, 119, 6, 0.1);">${ex.explanation}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="metadata-card">
+                            <div class="confidence-score">
+                                <span>Confidence:</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: ${answer.confidence * 100}%"></div>
+                                </div>
+                                <span style="color: var(--claude-amber-dark); font-weight: 700;">${(answer.confidence * 100).toFixed(0)}%</span>
+                            </div>
+                            <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add to history
+                addToHistory(answer.question, answer.answer, answer.confidence);
+                
+                // Show history button
+                const historyBtn = document.getElementById('viewHistoryBtn');
+                if (historyBtn && questionHistory.length > 0) {
+                    historyBtn.style.display = 'block';
+                }
+            }
+        }
+        
+        // AI Status Bar Management
+        function showAIStatus(message, details = '') {
+            const statusBar = document.getElementById('aiStatusBar');
+            const statusMessage = document.getElementById('statusMessage');
+            const statusDetails = document.getElementById('statusDetails');
+            
+            if (statusBar && statusMessage && statusDetails) {
+                statusMessage.textContent = message;
+                statusDetails.textContent = details;
+                statusBar.classList.add('show');
+            }
+        }
+        
+        function hideAIStatus() {
+            const statusBar = document.getElementById('aiStatusBar');
+            if (statusBar) {
+                statusBar.classList.remove('show');
+            }
+        }
+        
+        function updateAIStatus(message, details = '') {
+            const statusMessage = document.getElementById('statusMessage');
+            const statusDetails = document.getElementById('statusDetails');
+            
+            if (statusMessage && statusDetails) {
+                statusMessage.textContent = message;
+                statusDetails.textContent = details;
+            }
+        }
+        
+        // File reading utility
+        async function readFileContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file);
+            });
+        }
+        
+        // Question History Management
+        let questionHistory = [];
+        let expandedAnswers = new Set();
+        
+        function addToHistory(question, answer, confidence) {
+            const historyItem = {
+                id: Date.now().toString(),
+                question,
+                answer,
+                confidence,
+                timestamp: new Date().toISOString()
+            };
+            
+            questionHistory.unshift(historyItem); // Add to beginning
+            
+            // Keep only last 20 questions
+            if (questionHistory.length > 20) {
+                questionHistory = questionHistory.slice(0, 20);
+            }
+            
+            updateHistoryModal();
+        }
+        
+        function updateHistoryModal() {
+            const modalContent = document.getElementById('historyModalContent');
+            if (!modalContent) return;
+            
+            if (questionHistory.length === 0) {
+                modalContent.innerHTML = `
+                    <div class="history-empty">
+                        <div class="history-empty-icon">🤔</div>
+                        <p>No questions asked yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            modalContent.innerHTML = questionHistory.map((item, index) => `
+                <div class="history-item">
+                    <div class="history-item-header" onclick="toggleHistoryAnswer('${item.id}')">
+                        <div class="history-question">"${item.question}"</div>
+                        <div class="history-meta">
+                            <span class="history-confidence">${(item.confidence * 100).toFixed(0)}%</span>
+                            <span class="history-timestamp">${new Date(item.timestamp).toLocaleTimeString()}</span>
+                            <button class="history-expand-btn" onclick="event.stopPropagation(); toggleHistoryAnswer('${item.id}')">
+                                <span id="expand-icon-${item.id}">${expandedAnswers.has(item.id) ? '▼' : '▶'}</span>
+                                ${expandedAnswers.has(item.id) ? 'Hide' : 'Show'} Answer
+                            </button>
+                        </div>
+                    </div>
+                    <div class="history-answer ${expandedAnswers.has(item.id) ? 'expanded' : 'collapsed'}" id="answer-${item.id}">
+                        <div class="history-answer-content">
+                            ${item.answer.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleHistoryAnswer(itemId) {
+            if (expandedAnswers.has(itemId)) {
+                expandedAnswers.delete(itemId);
+            } else {
+                expandedAnswers.add(itemId);
+            }
+            updateHistoryModal();
+        }
+        
+        function showHistoryModal() {
+            console.log('📖 Opening history modal...');
+            const modal = document.getElementById('historyModal');
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                console.log('✅ History modal opened');
+            } else {
+                console.error('❌ History modal not found');
+            }
+        }
+        
+        function closeHistoryModal() {
+            console.log('📖 Closing history modal...');
+            const modal = document.getElementById('historyModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+                console.log('✅ History modal closed');
+            }
+        }
+        
+        // Format structured AI responses with proper section styling
+        function formatStructuredResponse(responseText) {
+            if (!responseText) return 'No response received';
+            
+            let formatted = responseText;
+            
+            // Remove markdown artifacts and format properly
+            formatted = formatted
+                // Convert **bold** to proper HTML
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Convert *italic* to proper HTML
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Convert - list items to proper bullets
+                .replace(/^- (.+)/gm, '• $1')
+                // Handle numbered lists
+                .replace(/^(\d+)\. (.+)/gm, '<div style="margin: 0.5rem 0;"><span style="color: var(--claude-amber); font-weight: 600;">$1.</span> $2</div>')
+                // Replace section headers with styled HTML
+                .replace(/## Summary\n?/g, '<div class="response-section"><h5 class="section-header">📋 Summary</h5>')
+                .replace(/## Technical Details\n?/g, '</div><div class="response-section"><h5 class="section-header">🔧 Technical Details</h5>')
+                .replace(/## Code References\n?/g, '</div><div class="response-section"><h5 class="section-header">📂 Code References</h5>')
+                .replace(/## Implementation Notes\n?/g, '</div><div class="response-section"><h5 class="section-header">💡 Implementation Notes</h5>');
+            
+            // If no sections were found, format as a clean response
+            if (!formatted.includes('response-section')) {
+                formatted = `<div class="clean-response">${formatted}</div>`;
+            } else {
+                formatted += '</div>'; // Close the last section
+            }
+            
+            // Add CSS for response formatting
+            formatted = `
+                <style>
+                .response-section {
+                    margin-bottom: 1.5rem;
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, rgba(217, 119, 6, 0.05), rgba(255, 248, 237, 0.8));
+                    border-left: 4px solid var(--claude-amber);
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                }
+                .response-section:last-child {
+                    margin-bottom: 0;
+                }
+                .section-header {
+                    color: var(--claude-amber-dark);
+                    margin: 0 0 1rem 0;
+                    font-weight: 700;
+                    font-size: 1.2rem;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
+                .clean-response {
+                    font-size: 1.05rem;
+                    line-height: 1.7;
+                    color: var(--claude-text-primary);
+                }
+                .clean-response strong {
+                    color: var(--claude-amber-dark);
+                    font-weight: 700;
+                }
+                .clean-response em {
+                    color: var(--claude-text-secondary);
+                    font-style: italic;
+                }
+                </style>
+                ${formatted}
+            `;
+            
+            // Convert line breaks while preserving formatted content
+            formatted = formatted.replace(/\n(?![<])/g, '<br>');
+            
+            return formatted;
+        }
+        
+        // Make functions globally available
+        window.showHistoryModal = showHistoryModal;
+        window.closeHistoryModal = closeHistoryModal;
+        window.toggleHistoryAnswer = toggleHistoryAnswer;
+        
+        function displayDocumentation(result) {
+            // Store for later access
+            lastGeneratedDocumentation = result;
+            
+            // Show the documentation block
+            const docBlock = document.getElementById('documentationBlock');
+            if (docBlock) {
+                docBlock.style.display = 'block';
+            }
+            
+            // Create documentation modal
+            const modal = document.createElement('div');
+            modal.id = 'documentationModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(8px);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: var(--claude-surface);
+                border-radius: 16px;
+                max-width: 90%;
+                max-height: 90%;
+                overflow: auto;
+                padding: 2rem;
+                box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--claude-border);
+            `;
+            
+            const documentation = result.documentation || 'No documentation generated';
+            
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="color: var(--claude-amber); margin: 0;">📚 Comprehensive Documentation</h2>
+                    <button onclick="closeDocumentationModal()" 
+                            style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--claude-text-muted); padding: 0.5rem; border-radius: 50%; transition: background-color 0.2s ease;" 
+                            onmouseover="this.style.backgroundColor='rgba(0,0,0,0.1)'" 
+                            onmouseout="this.style.backgroundColor='transparent'">✕</button>
+                </div>
+                <div style="background: var(--claude-surface-elevated); padding: 2rem; border-radius: 12px; border: 1px solid var(--claude-border);">
+                    <pre style="white-space: pre-wrap; font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; color: var(--claude-text-primary); margin: 0;">${documentation}</pre>
+                </div>
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button onclick="copyCurrentDocumentation()" 
+                            style="background: var(--claude-amber); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">
+                        📋 Copy Documentation
+                    </button>
+                    <button onclick="downloadCurrentDocumentation('${(result.repository?.name || 'project')}_documentation.md')" 
+                            style="background: var(--claude-surface-elevated); color: var(--claude-text-primary); border: 1px solid var(--claude-border); padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">
+                        💾 Download as MD
+                    </button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeDocumentationModal();
+                }
+            });
+        }
+        
+        window.downloadDocumentation = function(content, filename) {
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        // Store last generated documentation
+        let lastGeneratedDocumentation = null;
+
+        // Simple copy function using stored documentation
+        window.copyCurrentDocumentation = function() {
+            if (lastGeneratedDocumentation && lastGeneratedDocumentation.documentation) {
+                const content = lastGeneratedDocumentation.documentation;
+                navigator.clipboard.writeText(content).then(() => {
+                    showMessage('📋 Documentation copied to clipboard!', 'success');
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = content;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showMessage('📋 Documentation copied to clipboard!', 'success');
+                });
+            } else {
+                showMessage('❌ No documentation available to copy', 'error');
+            }
+        };
+
+        // Simple download function using stored documentation
+        window.downloadCurrentDocumentation = function(filename) {
+            if (lastGeneratedDocumentation && lastGeneratedDocumentation.documentation) {
+                const content = lastGeneratedDocumentation.documentation;
+                const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showMessage('💾 Documentation downloaded successfully!', 'success');
+            } else {
+                showMessage('❌ No documentation available to download', 'error');
+            }
+        };
+
+        // Close documentation modal function
+        window.closeDocumentationModal = function() {
+            const modal = document.getElementById('documentationModal');
+            if (modal) {
+                modal.remove();
+            }
+        };
+
+        // Reopen documentation modal
+        window.reopenDocumentationModal = function() {
+            if (lastGeneratedDocumentation) {
+                displayDocumentation(lastGeneratedDocumentation);
+            }
+        };
+
+        // Download last generated documentation
+        window.downloadLastDocumentation = function() {
+            if (lastGeneratedDocumentation) {
+                const documentation = lastGeneratedDocumentation.documentation || 'No documentation available';
+                const filename = `${lastGeneratedDocumentation.repository?.name || 'project'}_documentation.md`;
+                downloadDocumentationAsFile(btoa(documentation), filename);
+            }
+        };
+        
+        function clearHistory() {
+            questionHistory = [];
+            expandedAnswers.clear();
+            updateHistoryModal();
+            const historyBtn = document.getElementById('viewHistoryBtn');
+            if (historyBtn) {
+                historyBtn.style.display = 'none';
+            }
+        }
+        
+        // Define working functions immediately
+        window.analyzeRepository = async function() {
+            console.log('🔍 Starting real repository analysis...');
+            
+            const repoUrl = document.getElementById('repoUrl')?.value?.trim();
+            const fileInput = document.getElementById('fileInput');
+            
+            // Check what inputs we have
+            const hasUrl = repoUrl && repoUrl.length > 0;
+            const hasFiles = fileInput && fileInput.files.length > 0;
+            
+            console.log('🔍 Input check - URL:', hasUrl ? repoUrl : 'none', 'Files:', hasFiles ? fileInput.files.length : 0);
+            
+            if (!hasUrl && !hasFiles) {
+                alert('Please provide either a repository URL OR upload files (not both)');
+                return;
+            }
+            
+            if (hasUrl && hasFiles) {
+                alert('Please use either URL OR file upload, not both. Clear one option first.');
+                return;
+            }
+            
+            console.log('📊 Calling API for analysis...');
+            showAIStatus('🔍 Analyzing Repository', 'Reading files and extracting structure...');
+            showMessage('🔍 Analyzing repository with real AI...', 'info');
+            
+            try {
+                let analysisData;
+                
+                if (hasUrl) {
+                    console.log('🌐 Analyzing GitHub repo:', repoUrl);
+                    console.log('📤 Sending request to:', 'http://localhost:3001/api/analyze');
+                    
+                    const response = await fetch('http://localhost:3001/api/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ repoUrl })
+                    });
+                    
+                    console.log('📥 Response status:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('❌ API Error response:', errorText);
+                        throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+                    }
+                    
+                    analysisData = await response.json();
+                    console.log('✅ Analysis data received:', analysisData);
+                } else {
+                    console.log('📁 Analyzing uploaded files...');
+                    console.log('📂 Number of files selected:', fileInput.files.length);
+                    
+                    // Read actual file content
+                    const fileList = [];
+                    updateAIStatus('📖 Reading Files', `Processing ${fileInput.files.length} files...`);
+                    
+                    for (let i = 0; i < fileInput.files.length; i++) {
+                        const file = fileInput.files[i];
+                        console.log(`📖 Reading file: ${file.name}`);
+                        updateAIStatus('📖 Reading Files', `Processing ${file.name} (${i + 1}/${fileInput.files.length})`);
+                        
+                        const content = await readFileContent(file);
+                        fileList.push({
+                            name: file.name,
+                            size: file.size,
+                            type: file.name.split('.').pop(),
+                            content: content
+                        });
+                    }
+                    
+                    console.log('📤 Sending upload request with content:', fileList.map(f => `${f.name} (${f.content.length} chars)`));
+                    updateAIStatus('🧠 AI Analysis', 'Sending to IBM watsonx.ai for analysis...');
+                    
+                    const response = await fetch('http://localhost:3001/api/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            uploadedFiles: fileList,
+                            type: 'upload'
+                        })
+                    });
+                    
+                    console.log('📥 Upload response status:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('❌ Upload Error response:', errorText);
+                        throw new Error(`Upload Error: ${response.status} ${response.statusText} - ${errorText}`);
+                    }
+                    
+                    analysisData = await response.json();
+                    console.log('✅ Upload analysis data received:', analysisData);
+                }
+                
+                console.log('✅ Analysis complete:', analysisData);
+                console.log('📊 About to display results...');
+                
+                // Clear history when analyzing new repository
+                const currentRepoKey = hasUrl ? repoUrl : 'upload-' + fileInput.files.length;
+                if (window.lastAnalyzedRepo !== currentRepoKey) {
+                    console.log('🗑️ Clearing history for new repo');
+                    clearHistory();
+                    window.lastAnalyzedRepo = currentRepoKey;
+                }
+                
+                console.log('📋 Calling displayResults function...');
+                displayResults(analysisData);
+                console.log('✅ displayResults completed');
+                
+                hideAIStatus();
+                showMessage('✅ Analysis complete with real AI!', 'success');
+                console.log('🎉 Analysis workflow completed successfully');
+                
+            } catch (error) {
+                console.error('❌ Analysis failed:', error);
+                console.error('❌ Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+                hideAIStatus();
+                showMessage(`❌ Analysis failed: ${error.message}`, 'error');
+                
+                // Also log to display for debugging
+                const responseDiv = document.getElementById('aiResponse');
+                if (responseDiv) {
+                    responseDiv.style.display = 'block';
+                    responseDiv.innerHTML = `
+                        <div style="background: #fee; border: 1px solid #fcc; border-radius: 8px; padding: 1rem; color: #c00;">
+                            <h4>Debug: Analysis Error</h4>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                            <p><strong>Type:</strong> ${error.name}</p>
+                            <pre style="background: #fff; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; overflow-x: auto;">${error.stack}</pre>
+                        </div>
+                    `;
+                }
+            }
+        };
+        
+        window.generateDocumentation = async function() {
+            console.log('📚 Starting documentation generation...');
+            
+            if (!window.currentAnalysis) {
+                alert('Please analyze a repository first');
+                return;
+            }
+            
+            showAIStatus('📚 Generating Documentation', 'Creating comprehensive documentation...');
+            showMessage('📚 Generating comprehensive documentation...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/generate-docs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        codebaseContext: window.currentAnalysis 
+                    })
+                });
+                
+                console.log('📥 Documentation API response status:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    throw new Error(`Documentation generation failed: ${response.status} ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                console.log('✅ Documentation generated successfully');
+                
+                hideAIStatus();
+                hideMessage();
+                
+                // Display documentation in a new modal or section
+                displayDocumentation(result);
+                
+            } catch (error) {
+                console.error('Documentation generation error:', error);
+                hideAIStatus();
+                showMessage(`Error generating documentation: ${error.message}`, 'error');
+            }
+        };
+        
+        window.askQuestion = async function() {
+            console.log('🤖 Starting real AI question...');
+            
+            const question = document.getElementById('queryInput')?.value;
+            
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+            
+            if (!window.currentAnalysis) {
+                alert('Please analyze a repository first');
+                return;
+            }
+            
+            console.log('📝 Current analysis context:', window.currentAnalysis);
+            console.log('📂 Files in current analysis:', window.currentAnalysis?.files?.map(f => `${f.name} (content: ${f.content?.length || 0} chars)`));
+            
+            console.log('💭 Asking AI:', question);
+            console.log('📤 Sending question to API...');
+            console.log('🔍 Request payload:', { 
+                question, 
+                codebaseContext: window.currentAnalysis 
+            });
+            
+            showAIStatus('🤖 AI Thinking', 'IBM watsonx.ai is analyzing your question...');
+            showMessage('🤖 AI is thinking...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/question', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        question, 
+                        codebaseContext: window.currentAnalysis 
+                    })
+                });
+                
+                console.log('📥 Question API response status:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Question API Error:', errorText);
+                    throw new Error(`AI Error: ${response.status} ${response.statusText} - ${errorText}`);
+                }
+                
+                const answer = await response.json();
+                console.log('✅ AI raw response received:', answer);
+                console.log('🧠 AI answer text:', answer.answer);
+                console.log('🎯 AI confidence:', answer.confidence);
+                displayAIResponse(answer);
+                
+                // Clear the question input after successful response
+                const queryInput = document.getElementById('queryInput');
+                if (queryInput) {
+                    queryInput.value = '';
+                    console.log('✅ Question input cleared');
+                }
+                
+                hideAIStatus();
+                showMessage('✅ AI answered with real intelligence!', 'success');
+                
+            } catch (error) {
+                console.error('❌ AI question failed:', error);
+                hideAIStatus();
+                showMessage(`❌ AI failed: ${error.message}`, 'error');
+            }
+        };
+        
+        // All functionality is now integrated in this file
+        console.log('✅ All functions loaded successfully');
+        
+        // Test if buttons exist and are working
+        const analyzeBtn = document.querySelector('button[onclick="analyzeRepository()"]');
+        const questionBtn = document.querySelector('button[onclick="askQuestion()"]');
+        
+        console.log('🔍 Analyze button found:', !!analyzeBtn);
+        console.log('🤖 Question button found:', !!questionBtn);
+        
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', function(e) {
+                console.log('🎯 Analyze button clicked via event listener!');
+            });
+        }
+        
+        if (questionBtn) {
+            questionBtn.addEventListener('click', function(e) {
+                console.log('🎯 Question button clicked via event listener!');
+            });
+        }
+        
+        // Add modal event listeners
+        document.addEventListener('click', function(e) {
+            // Close modal when clicking overlay
+            if (e.target.id === 'historyModal') {
+                closeHistoryModal();
+            }
+        });
+        
+        // Close modal with escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeHistoryModal();
+            }
+        });
+        
+        console.log('🎉 Codebase Whisperer fully loaded and ready!');
+        
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>
