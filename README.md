@@ -150,7 +150,7 @@ Developers spend **60% of their time** understanding unfamiliar code. Our agent 
 
 ## 🎬 Demo Video
 
-Watch our 3-minute demonstration: [Demo Video Link]([https://vimeo.com/1110690654?share=copy])
+Watch our 3-minute demonstration: [Demo Video Link](https://vimeo.com/1110690654?share=copy)
 
 ## 🏆 What Makes This Special
 
