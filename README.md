@@ -150,13 +150,7 @@ Developers spend **60% of their time** understanding unfamiliar code. Our agent 
 
 ## 🎬 Demo Video
 
-Watch our 3-minute demonstration: [Demo Video Link](https://your-demo-video-url.com)
-
-**Demo Flow**:
-1. Analyze React.js repository (2,847 files in 30 seconds)
-2. Ask "How does component re-rendering work?"
-3. Generate comprehensive documentation
-4. Show architectural visualizations
+Watch our 3-minute demonstration: [Demo Video Link]([https://your-demo-video-url.com](https://vimeo.com/1110690654?share=copy))
 
 ## 🏆 What Makes This Special
 
@@ -170,10 +164,6 @@ Watch our 3-minute demonstration: [Demo Video Link](https://your-demo-video-url.
 - **Multi-Agent Coordination**: Specialized AI agents working together
 - **Real-time Intelligence**: Live IBM watsonx API integration
 - **Human-like Understanding**: Reads code relationships and architectural patterns
-
-## 👥 Team
-
-Built with ❤️ for the IBM TechXchange 2025 Hackathon by developers who understand the pain of code exploration.
 
 ## 📄 License
 
